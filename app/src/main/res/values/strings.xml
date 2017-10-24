@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Đọc File Ảnh</string>
+    <string name="smg">Please enable all permission</string>
 </resources>

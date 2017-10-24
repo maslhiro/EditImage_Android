@@ -1,16 +1,12 @@
 package uit.nhutvinh.docfileanhtrendienthoai;
 
+import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.ParcelFileDescriptor;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.Manifest;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -19,10 +15,12 @@ import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import uit.nhutvinh.permission.AbsRuntimePermission;
 
-public class MainActivity extends AppCompatActivity {
 
+public class MainActivity extends AbsRuntimePermission {
 
+    private static final int REQUEST_PERMISSION = 10;
     private static final int SELECT_PHOTO = 100;
     ImageView imgHinh;
     Button btnChon;
@@ -38,6 +36,11 @@ public class MainActivity extends AppCompatActivity {
         addEvents();
     }
 
+    @Override
+    public void onPermissionsGranted(int requestCode) {
+        Toast.makeText(getApplicationContext(), "Permission granted", Toast.LENGTH_LONG).show();
+    }
+
     public void xuLyChonAnh(View view) {
 
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
@@ -51,13 +54,14 @@ public class MainActivity extends AppCompatActivity {
 
         switch (requestCode) {
             case SELECT_PHOTO:
-                 if (resultCode == RESULT_OK  && null != imageReturnedIntent) {
-                     decodeUri(imageReturnedIntent.getData());
+                if (resultCode == RESULT_OK && null != imageReturnedIntent) {
+                    decodeUri(imageReturnedIntent.getData());
                 }
         }
 
     }
-      private void addEvents() {
+
+    private void addEvents() {
         btnChon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,58 +106,31 @@ public class MainActivity extends AppCompatActivity {
             imgHinh.setImageBitmap(bitmap);
 
         } catch (FileNotFoundException e) {
-           Toast.makeText(MainActivity.this,"File ảnh ko khả dụng !, Vui lòng thủ lại",Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "File ảnh ko khả dụng !, Vui lòng thủ lại", Toast.LENGTH_LONG).show();
         } finally {
             if (parcelFD != null)
                 try {
                     parcelFD.close();
                 } catch (IOException e) {
-                    Toast.makeText(MainActivity.this,"File ảnh ko khả dụng !, Vui lòng thủ lại",Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "File ảnh ko khả dụng !, Vui lòng thủ lại", Toast.LENGTH_LONG).show();
                     // ignored
                 }
         }
     }
 
 
-
     private void addConTrols() {
         imgHinh = (ImageView) findViewById(R.id.imgHinh);
         btnChon = (Button) findViewById(R.id.btnChon);
     }
-    @Override
-    public void onRequestPermissionsResult(int requestCode,@NonNull String[] permissions, @NonNull int[] grantResults) {
-                if (requestCode == 1) {
-                    if (grantResults.length == 1 &&
-                            grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                        Toast.makeText(MainActivity.this, "Permision Write File is Granted", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(MainActivity.this, "Permision Write File is Denied", Toast.LENGTH_SHORT).show();
 
-            }
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }
 
     private void initPermission() {
-        // Kiểm tra xem thiết bị chạy trên android 6.0 trở lên hay ko
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        requestAppPermissions(new String[]{
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.CAMERA},
+                R.string.smg,REQUEST_PERMISSION);
 
-            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
-                //Permisson don't granted
-                if (shouldShowRequestPermissionRationale(
-                        Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    Toast.makeText(MainActivity.this, "Permission isn't granted ", Toast.LENGTH_SHORT).show();
-                }
-                // Permisson don't granted and dont show dialog again.
-                else {
-                    Toast.makeText(MainActivity.this, "Permisson don't granted and dont show dialog again ", Toast.LENGTH_SHORT).show();
-                }
-                //Register permission
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-
-            }
-        }
     }
 }
