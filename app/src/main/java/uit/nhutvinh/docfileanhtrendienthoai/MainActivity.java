@@ -15,6 +15,7 @@ import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import uit.nhutvinh.model.TakePicture;
 import uit.nhutvinh.permission.AbsRuntimePermission;
 
 
@@ -22,6 +23,7 @@ public class MainActivity extends AbsRuntimePermission {
 
     private static final int REQUEST_PERMISSION = 10;
     private static final int SELECT_PHOTO = 100;
+    TakePicture takePicture;
     ImageView imgHinh;
     Button btnChon;
 
@@ -35,17 +37,32 @@ public class MainActivity extends AbsRuntimePermission {
         addConTrols();
         addEvents();
     }
-
-    @Override
-    public void onPermissionsGranted(int requestCode) {
-        Toast.makeText(getApplicationContext(), "Permission granted", Toast.LENGTH_LONG).show();
+    private void addEvents() {
+        btnChon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                takePicture(v);
+            }
+        });
     }
 
-    public void xuLyChonAnh(View view) {
+    private void addConTrols() {
+
+        imgHinh = (ImageView) findViewById(R.id.imgHinh);
+        btnChon = (Button) findViewById(R.id.btnChon);
+        takePicture= new TakePicture(imgHinh);
+    }
+
+    public void takePicture(View view) {
 
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
         startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode) {
+        Toast.makeText(getApplicationContext(), "Permission granted", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -55,75 +72,12 @@ public class MainActivity extends AbsRuntimePermission {
         switch (requestCode) {
             case SELECT_PHOTO:
                 if (resultCode == RESULT_OK && null != imageReturnedIntent) {
-                    decodeUri(imageReturnedIntent.getData());
+                    //decodeUri(imageReturnedIntent.getData());
+                    takePicture.decodeUri(MainActivity.this,imageReturnedIntent.getData());
                 }
         }
 
     }
-
-    private void addEvents() {
-        btnChon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                xuLyChonAnh(v);
-            }
-        });
-    }
-
-    public void decodeUri(Uri uri) {
-        ParcelFileDescriptor parcelFD = null;
-        try {
-            // Get Bitmap
-            parcelFD = getContentResolver().openFileDescriptor(uri, "r");
-            assert parcelFD != null;
-            FileDescriptor imageSource = parcelFD.getFileDescriptor();
-
-            // Decode image size
-            BitmapFactory.Options o = new BitmapFactory.Options();
-            o.inJustDecodeBounds = true;
-            BitmapFactory.decodeFileDescriptor(imageSource, null, o);
-
-            // the new size we want to scale to
-            final int REQUIRED_SIZE = 2048;
-
-            // Find the correct scale value. It should be the power of 2.
-            int width_tmp = o.outWidth, height_tmp = o.outHeight;
-            int scale = 1;
-            while (true) {
-                if (width_tmp < REQUIRED_SIZE && height_tmp < REQUIRED_SIZE) {
-                    break;
-                }
-                width_tmp /= 2;
-                height_tmp /= 2;
-                scale *= 2;
-            }
-
-            // decode with inSampleSize
-            BitmapFactory.Options o2 = new BitmapFactory.Options();
-            o2.inSampleSize = scale;
-            Bitmap bitmap = BitmapFactory.decodeFileDescriptor(imageSource, null, o2);
-
-            imgHinh.setImageBitmap(bitmap);
-
-        } catch (FileNotFoundException e) {
-            Toast.makeText(MainActivity.this, "File ảnh ko khả dụng !, Vui lòng thủ lại", Toast.LENGTH_LONG).show();
-        } finally {
-            if (parcelFD != null)
-                try {
-                    parcelFD.close();
-                } catch (IOException e) {
-                    Toast.makeText(MainActivity.this, "File ảnh ko khả dụng !, Vui lòng thủ lại", Toast.LENGTH_LONG).show();
-                    // ignored
-                }
-        }
-    }
-
-
-    private void addConTrols() {
-        imgHinh = (ImageView) findViewById(R.id.imgHinh);
-        btnChon = (Button) findViewById(R.id.btnChon);
-    }
-
 
     private void initPermission() {
         requestAppPermissions(new String[]{
@@ -133,4 +87,5 @@ public class MainActivity extends AbsRuntimePermission {
                 R.string.smg,REQUEST_PERMISSION);
 
     }
+
 }
