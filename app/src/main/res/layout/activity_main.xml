@@ -4,33 +4,69 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black"
-    android:orientation="vertical">
+    android:background="@drawable/background"
+    android:orientation="vertical"
+    tools:context=".MainActivity"
+    android:contentDescription="@null"
+    android:weightSum="1">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Pick an Image From SD Card Gallery"
-        android:textColor="@android:color/background_light"
-        android:textSize="20sp" />
-
-    <ImageView
-        android:id="@+id/imgHinh"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center"
-        android:adjustViewBounds="true"
-        android:background="@android:color/background_dark"
-        android:scaleType="fitCenter" />
+        android:layout_height="239dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="1">
 
-    <Button
-        android:id="@+id/btnChon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="16dp"
-        android:layout_marginTop="16dp"
-        android:text="Pick an Image" />
+        <ImageButton
+            android:id="@+id/btnCamera"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="bottom"
+            android:layout_weight="0.13"
+            android:background="@null"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/camera" />
 
+        <ImageButton
+            android:id="@+id/btnEdit"
+            style="@android:style/Widget.Material.ImageButton"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_weight="0.14"
+            android:background="@null"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/edit_image" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="218dp"
+        android:layout_weight="0.10"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <ImageButton
+            android:id="@+id/btnExit"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_weight="0.13"
+            android:background="@null"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/exit" />
+
+        <ImageButton
+            android:id="@+id/btnInfo"
+            style="@style/Widget.AppCompat.ImageButton"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="fill_horizontal"
+            android:layout_weight="0.14"
+            android:background="@null"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/info" />
+
+    </LinearLayout>
 
 </LinearLayout>

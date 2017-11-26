@@ -1,5 +1,6 @@
 package uit.nhutvinh.model;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -11,7 +12,8 @@ import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import uit.nhutvinh.docfileanhtrendienthoai.MainActivity;
+
+
 
 /**
  * Created by Vin Vin on 25/10/2017.
@@ -36,11 +38,11 @@ public class TakePicture {
     }
 
     // Lấy file ảnh và scale ảnh phù hợp
-    public void decodeUri(MainActivity mainActivity, Uri uri) {
+    public void decodeUri(Context context, Uri uri) {
         ParcelFileDescriptor parcelFD = null;
         try {
             // Get Bitmap
-            parcelFD = mainActivity.getContentResolver().openFileDescriptor(uri, "r");
+            parcelFD = context.getContentResolver().openFileDescriptor(uri, "r");
             assert parcelFD != null;
             FileDescriptor imageSource = parcelFD.getFileDescriptor();
 
@@ -72,13 +74,13 @@ public class TakePicture {
             imgHinh.setImageBitmap(bitmap);
 
         } catch (FileNotFoundException e) {
-            Toast.makeText(mainActivity, "File ảnh ko khả dụng !, Vui lòng thủ lại", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "File ảnh ko khả dụng !, Vui lòng thủ lại", Toast.LENGTH_LONG).show();
         } finally {
             if (parcelFD != null)
                 try {
                     parcelFD.close();
                 } catch (IOException e) {
-                    Toast.makeText(mainActivity, "File ảnh ko khả dụng !, Vui lòng thủ lại", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "File ảnh ko khả dụng !, Vui lòng thủ lại", Toast.LENGTH_LONG).show();
                     // ignored
                 }
         }
